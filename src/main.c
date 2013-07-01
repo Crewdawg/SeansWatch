@@ -14,14 +14,14 @@ PBL_APP_INFO(MY_UUID,
 Window window;
 TextLayer timeLayer;
 TextLayer caseLayer;
-int offon = 1;
+int sepCounter = 1;
 
 static char hourText[] = "00-00";
-char* caseChar;
+char caseChar[] = "0";
 
 void setTime(PblTm *t) {
 
-	switch( offon ) {
+	switch( sepCounter ) {
     case 1:
         string_format_time(hourText, sizeof(hourText), "%H/%M", t);
 		break;
@@ -36,13 +36,11 @@ void setTime(PblTm *t) {
     }
 	
   if(clock_is_24h_style())
-	  if(offon > 0)
-	  	  string_format_time(hourText, sizeof(hourText), "%H-%M", t);
-	else
-		if(offon == 1)
-		  string_format_time(hourText, sizeof(hourText), "%I-%M", t);
+	 string_format_time(hourText, sizeof(hourText), "%H-%M", t);
+  else
+	string_format_time(hourText, sizeof(hourText), "%I-%M", t);
 
-	caseChar = "9"; //itoa(offon);
+	caseChar = "9";//itoa(sepCounter);
 	text_layer_set_text(&caseLayer, caseChar);
 	text_layer_set_text(&timeLayer, hourText);
 }
@@ -63,10 +61,10 @@ void handle_sec_tick(AppTaskContextRef ctx, PebbleTickEvent *t) {
 	
 	//int seconds = time.tm_sec;
 	
-	if(offon == 3)
-		offon = 0;
+	if(sepCounter == 3)
+		sepCounter = 0;
 	else
-		offon++;
+		sepCounter++;
 	
 	//if(seconds == 0)
 		setTime(t->tick_time);	
