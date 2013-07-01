@@ -17,41 +17,32 @@ TextLayer caseLayer;
 int offon = 1;
 
 static char hourText[] = "00-00";
-static char* caseChar;
+char* caseChar;
 
 void setTime(PblTm *t) {
-//  if(clock_is_24h_style())
-//	  if(offon > 0)
-//	  	  string_format_time(hourText, sizeof(hourText), "%H-%M", t);
-//	  else
-//		  string_format_time(hourText, sizeof(hourText), "%H:%M", t);
-// else
-//	if(offon == 1)
-//	  string_format_time(hourText, sizeof(hourText), "%I-%M", t);
-//	else
-//	  string_format_time(hourText, sizeof(hourText), "%I:%M", t);
-	
+
 	switch( offon ) {
     case 1:
         string_format_time(hourText, sizeof(hourText), "%H/%M", t);
+		break;
     case 2:
         string_format_time(hourText, sizeof(hourText), "%H-%M", t);
+		break;
 	case 3:
-        string_format_time(hourText, sizeof(hourText), "%H\%M", t);
-	case 4:
-        string_format_time(hourText, sizeof(hourText), "%H:%M", t);
-	case 5:
-        string_format_time(hourText, sizeof(hourText), "%H/%M", t);
-	case 6:
-        string_format_time(hourText, sizeof(hourText), "%H-%M", t);
-    case 7:
-        string_format_time(hourText, sizeof(hourText), "%H\%M", t);
+        string_format_time(hourText, sizeof(hourText), "%H\\%M", t);
+		break;
 	default :
         string_format_time(hourText, sizeof(hourText), "%H:%M", t);
     }
 	
-	//sprintf(caseChar, "%d", offon);
-	caseChar = itoa(offon);
+  if(clock_is_24h_style())
+	  if(offon > 0)
+	  	  string_format_time(hourText, sizeof(hourText), "%H-%M", t);
+	else
+		if(offon == 1)
+		  string_format_time(hourText, sizeof(hourText), "%I-%M", t);
+
+	caseChar = "9"; //itoa(offon);
 	text_layer_set_text(&caseLayer, caseChar);
 	text_layer_set_text(&timeLayer, hourText);
 }
@@ -72,7 +63,7 @@ void handle_sec_tick(AppTaskContextRef ctx, PebbleTickEvent *t) {
 	
 	//int seconds = time.tm_sec;
 	
-	if(offon == 7)
+	if(offon == 3)
 		offon = 0;
 	else
 		offon++;
