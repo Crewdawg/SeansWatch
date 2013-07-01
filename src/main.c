@@ -1,6 +1,7 @@
 #include "pebble_os.h"
 #include "pebble_app.h"
 #include "pebble_fonts.h"
+#include "itoa.h"
 
 
 #define MY_UUID { 0x2E, 0x11, 0xC5, 0x2A, 0xC6, 0x4D, 0x4C, 0xF5, 0xB1, 0xFE, 0x0E, 0xA6, 0x44, 0x17, 0x05, 0x5F }
@@ -16,6 +17,7 @@ TextLayer caseLayer;
 int offon = 1;
 
 static char hourText[] = "00-00";
+static char caseChar = 0;
 
 void setTime(PblTm *t) {
 //  if(clock_is_24h_style())
@@ -48,8 +50,8 @@ void setTime(PblTm *t) {
         string_format_time(hourText, sizeof(hourText), "%H:%M", t);
     }
 	
-	char caseChar[1];
-	sprintf(caseChar, "%d", offon);
+	//sprintf(caseChar, "%d", offon);
+	caseChar = itoa(offon);
 	text_layer_set_text(&caseLayer, caseChar);
 	text_layer_set_text(&timeLayer, hourText);
 }
