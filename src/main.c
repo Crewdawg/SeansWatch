@@ -12,16 +12,46 @@ PBL_APP_INFO(MY_UUID,
 
 Window window;
 TextLayer timeLayer;
+TextLayer caseLayer;
+int offon = 1;
 
-static char hourText[] = "00:00";
+static char hourText[] = "00-00";
 
 void setTime(PblTm *t) {
-  if(clock_is_24h_style())
-	  string_format_time(hourText, sizeof(hourText), "%H:%M", t);
-  else
-	string_format_time(hourText, sizeof(hourText), "%I:%M", t);
+//  if(clock_is_24h_style())
+//	  if(offon > 0)
+//	  	  string_format_time(hourText, sizeof(hourText), "%H-%M", t);
+//	  else
+//		  string_format_time(hourText, sizeof(hourText), "%H:%M", t);
+// else
+//	if(offon == 1)
+//	  string_format_time(hourText, sizeof(hourText), "%I-%M", t);
+//	else
+//	  string_format_time(hourText, sizeof(hourText), "%I:%M", t);
 	
-  text_layer_set_text(&timeLayer, hourText);
+	switch( offon ) {
+    case 1:
+        string_format_time(hourText, sizeof(hourText), "%H/%M", t);
+    case 2:
+        string_format_time(hourText, sizeof(hourText), "%H-%M", t);
+	case 3:
+        string_format_time(hourText, sizeof(hourText), "%H\%M", t);
+	case 4:
+        string_format_time(hourText, sizeof(hourText), "%H:%M", t);
+	case 5:
+        string_format_time(hourText, sizeof(hourText), "%H/%M", t);
+	case 6:
+        string_format_time(hourText, sizeof(hourText), "%H-%M", t);
+    case 7:
+        string_format_time(hourText, sizeof(hourText), "%H\%M", t);
+	default :
+        string_format_time(hourText, sizeof(hourText), "%H:%M", t);
+    }
+	
+	char caseChar[1];
+	sprintf(caseChar, "%d", offon);
+	text_layer_set_text(&caseLayer, caseChar);
+	text_layer_set_text(&timeLayer, hourText);
 }
 
 void handle_min_tick(AppTaskContextRef ctx, PebbleTickEvent *t) {
@@ -38,9 +68,14 @@ void handle_sec_tick(AppTaskContextRef ctx, PebbleTickEvent *t) {
 	PblTm time;
 	get_time(&time);
 	
-	int seconds = time.tm_sec;
+	//int seconds = time.tm_sec;
 	
-	if(seconds == 0)
+	if(offon == 7)
+		offon = 0;
+	else
+		offon++;
+	
+	//if(seconds == 0)
 		setTime(t->tick_time);	
 }
 
@@ -49,20 +84,27 @@ void handle_init(AppContextRef ctx) {
 
   window_init(&window, "Window Name");
   window_stack_push(&window, true /* Animated */);
-  window_set_background_color(&window, GColorBlack);
+  window_set_background_color(&window, GColorWhite);
 	  
-  text_layer_init(&timeLayer, GRect(30,30,150,50));
-  text_layer_set_background_color(&timeLayer,GColorClear);
+  text_layer_init(&timeLayer, GRect(0,50,150,50));
+  text_layer_set_background_color(&timeLayer, GColorBlack);
   text_layer_set_font(&timeLayer,fonts_get_system_font(FONT_KEY_GOTHAM_30_BLACK));
   text_layer_set_text_alignment(&timeLayer, GTextAlignmentCenter);
+  text_layer_set_text_color(&timeLayer, GColorWhite);
+	
+  text_layer_init(&caseLayer, GRect(0,100,150,50));
+  text_layer_set_background_color(&caseLayer, GColorBlack);
+  text_layer_set_font(&caseLayer,fonts_get_system_font(FONT_KEY_GOTHAM_18_LIGHT_SUBSET));
+  text_layer_set_text_alignment(&caseLayer, GTextAlignmentCenter);
+  text_layer_set_text_color(&caseLayer, GColorWhite);
 	
   layer_add_child(&window.layer, &timeLayer.layer);
+  layer_add_child(&window.layer, &caseLayer.layer);
 	
   PblTm time;
   get_time(&time);
   setTime(&time);
 }
-
 
 
 void pbl_main(void *params) {
