@@ -1,6 +1,6 @@
 //stolen from https://github.com/Katharine/httpebble-timezone-demo/blob/master/src/itoa.h
 
-#define INT_DIGITS 12		/* enough for 32 bit integer */
+#define INT_DIGITS 1		
 
 char *itoa(int i)
 {

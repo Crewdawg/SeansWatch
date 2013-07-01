@@ -17,7 +17,7 @@ TextLayer caseLayer;
 int offon = 1;
 
 static char hourText[] = "00-00";
-static char caseChar = 0;
+static char* caseChar;
 
 void setTime(PblTm *t) {
 //  if(clock_is_24h_style())
